@@ -68,3 +68,7 @@ dotnet run
 + Wichtig für die Prüfung: Wir dürfen KI (Copilot, ChatGPT etc.) zum Coden nutzen, müssen den Code aber bei der Präsentation erklären können!
 
 + Die fertige App muss Evaluierungen abfragen und ein fertiges Zeugnis generieren können.
+
+## 📌 Wichtiger Hinweis zum Workflow
+Bitte beachtet: Die aktive Entwicklung findet ausschließlich auf dem dev-Branch statt.     
+Neue Feature-Branches dürfen nur vom dev-Branch abgezweigt werden, um eine saubere Versionshistorie zu gewährleisten.
