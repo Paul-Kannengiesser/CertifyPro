@@ -37,7 +37,7 @@ git config user.email
 
 ## 🛠️ 3. Installation der Tools & Abhängigkeiten
 Damit das Programm bei euch läuft, benötigt ihr das .NET SDK.   
-Download: Installiert das .NET 8.0 SDK (LTS) oder höher von dotnet.microsoft.com.   
+Download: Installiert das .NET 8.0 SDK (LTS) oder höher (nicht neuer als 9.0) von dotnet.microsoft.com.   
 Abhängigkeiten laden: Navigiert im Terminal in den Ordner CertifyPro und tippt:
 
 ```bash
