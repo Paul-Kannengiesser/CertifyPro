@@ -13,6 +13,8 @@ Um das Projekt auf euren Rechner zu bekommen, öffnet euer Terminal (Mac: Termin
 # Projekt auf den eigenen Rechner kopieren
 git clone git@github.com:Paul-Kannengiesser/CertifyPro.git
 
+Paul ist ein G
+
 # In den Projektordner wechseln
 cd CertifyPro
 ```
