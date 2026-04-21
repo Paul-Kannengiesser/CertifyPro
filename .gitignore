@@ -6,6 +6,10 @@
 # dotenv files
 .env
 
+# Runtime data files (user-generated, not source)
+Data/*.json
+!Data/DefaultEvaluationCriterias.json
+
 # Claude Code
 .claude/
 
