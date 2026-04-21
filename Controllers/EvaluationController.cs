@@ -75,7 +75,8 @@ public class EvaluationController : Controller
             UserEmail = UserEmail,
             Anrede = vm.Anrede,
             Titel = vm.Titel,
-            Name = vm.Name,
+            Vorname = vm.Vorname,
+            Nachname = vm.Nachname,
             Abteilung = vm.Abteilung,
             Position = vm.Position,
             Eintrittsdatum = vm.Eintrittsdatum,
@@ -83,7 +84,9 @@ public class EvaluationController : Controller
             Austrittsgrund = vm.Austrittsgrund,
             Geburtsdatum = vm.Geburtsdatum,
             Firmenname = vm.Firmenname,
-            UnterzeichnerName = vm.UnterzeichnerName,
+            Taetigkeitsbeschreibung = vm.Taetigkeitsbeschreibung,
+            UnterzeichnerVorname = vm.UnterzeichnerVorname,
+            UnterzeichnerNachname = vm.UnterzeichnerNachname,
             UnterzeichnerFunktion = vm.UnterzeichnerFunktion,
             CriteriaAnswers = vm.CriteriaAnswers.Select(ca => new CriteriaAnswer
             {
@@ -185,7 +188,8 @@ public class EvaluationController : Controller
 
         evaluation.Anrede = vm.Anrede;
         evaluation.Titel = vm.Titel;
-        evaluation.Name = vm.Name;
+        evaluation.Vorname = vm.Vorname;
+        evaluation.Nachname = vm.Nachname;
         evaluation.Abteilung = vm.Abteilung;
         evaluation.Position = vm.Position;
         evaluation.Eintrittsdatum = vm.Eintrittsdatum;
@@ -193,7 +197,9 @@ public class EvaluationController : Controller
         evaluation.Austrittsgrund = vm.Austrittsgrund;
         evaluation.Geburtsdatum = vm.Geburtsdatum;
         evaluation.Firmenname = vm.Firmenname;
-        evaluation.UnterzeichnerName = vm.UnterzeichnerName;
+        evaluation.Taetigkeitsbeschreibung = vm.Taetigkeitsbeschreibung;
+        evaluation.UnterzeichnerVorname = vm.UnterzeichnerVorname;
+        evaluation.UnterzeichnerNachname = vm.UnterzeichnerNachname;
         evaluation.UnterzeichnerFunktion = vm.UnterzeichnerFunktion;
         evaluation.CriteriaAnswers = vm.CriteriaAnswers.Select(ca => new CriteriaAnswer
         {
@@ -237,7 +243,8 @@ public class EvaluationController : Controller
             Id = e.Id,
             Anrede = e.Anrede,
             Titel = e.Titel,
-            Name = e.Name,
+            Vorname = e.Vorname,
+            Nachname = e.Nachname,
             Abteilung = e.Abteilung,
             Position = e.Position,
             Eintrittsdatum = e.Eintrittsdatum,
@@ -245,7 +252,9 @@ public class EvaluationController : Controller
             Austrittsgrund = e.Austrittsgrund,
             Geburtsdatum = e.Geburtsdatum,
             Firmenname = e.Firmenname,
-            UnterzeichnerName = e.UnterzeichnerName,
+            Taetigkeitsbeschreibung = e.Taetigkeitsbeschreibung,
+            UnterzeichnerVorname = e.UnterzeichnerVorname,
+            UnterzeichnerNachname = e.UnterzeichnerNachname,
             UnterzeichnerFunktion = e.UnterzeichnerFunktion
         };
 

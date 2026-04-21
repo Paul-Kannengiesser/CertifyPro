@@ -13,9 +13,13 @@ public class EvaluationViewModel
     [Display(Name = "Titel")]
     public string? Titel { get; set; }
 
-    [Required(ErrorMessage = "Name ist erforderlich")]
-    [Display(Name = "Name")]
-    public string Name { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Vorname ist erforderlich")]
+    [Display(Name = "Vorname")]
+    public string Vorname { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Nachname ist erforderlich")]
+    [Display(Name = "Nachname")]
+    public string Nachname { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Abteilung ist erforderlich")]
     [Display(Name = "Abteilung")]
@@ -46,9 +50,16 @@ public class EvaluationViewModel
     [Display(Name = "Firmenname")]
     public string Firmenname { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Name des Unterzeichners ist erforderlich")]
-    [Display(Name = "Unterzeichner – Name")]
-    public string UnterzeichnerName { get; set; } = string.Empty;
+    [Display(Name = "Tätigkeitsbeschreibung")]
+    public string? Taetigkeitsbeschreibung { get; set; }
+
+    [Required(ErrorMessage = "Vorname des Unterzeichners ist erforderlich")]
+    [Display(Name = "Unterzeichner – Vorname")]
+    public string UnterzeichnerVorname { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Nachname des Unterzeichners ist erforderlich")]
+    [Display(Name = "Unterzeichner – Nachname")]
+    public string UnterzeichnerNachname { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Funktion des Unterzeichners ist erforderlich")]
     [Display(Name = "Unterzeichner – Funktion")]

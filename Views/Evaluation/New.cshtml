@@ -61,10 +61,15 @@
                             <label asp-for="Titel" class="form-label fw-semibold"></label>
                             <input asp-for="Titel" class="form-control" placeholder="z. B. Dr., Prof." />
                         </div>
-                        <div class="col-md-6">
-                            <label asp-for="Name" class="form-label fw-semibold"></label>
-                            <input asp-for="Name" class="form-control" placeholder="Vor- und Nachname" />
-                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        <div class="col-md-3">
+                            <label asp-for="Vorname" class="form-label fw-semibold"></label>
+                            <input asp-for="Vorname" class="form-control" placeholder="Vorname" />
+                            <span asp-validation-for="Vorname" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Nachname" class="form-label fw-semibold"></label>
+                            <input asp-for="Nachname" class="form-control" placeholder="Nachname" />
+                            <span asp-validation-for="Nachname" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Position" class="form-label fw-semibold"></label>
@@ -125,10 +130,15 @@
                             <span asp-validation-for="Firmenname" class="text-danger small"></span>
                         </div>
                         <div class="w-100"></div>
-                        <div class="col-md-6">
-                            <label asp-for="UnterzeichnerName" class="form-label fw-semibold"></label>
-                            <input asp-for="UnterzeichnerName" class="form-control" placeholder="z. B. Max Mustermann" />
-                            <span asp-validation-for="UnterzeichnerName" class="text-danger small"></span>
+                        <div class="col-md-3">
+                            <label asp-for="UnterzeichnerVorname" class="form-label fw-semibold"></label>
+                            <input asp-for="UnterzeichnerVorname" class="form-control" placeholder="Vorname" />
+                            <span asp-validation-for="UnterzeichnerVorname" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="UnterzeichnerNachname" class="form-label fw-semibold"></label>
+                            <input asp-for="UnterzeichnerNachname" class="form-control" placeholder="Nachname" />
+                            <span asp-validation-for="UnterzeichnerNachname" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="UnterzeichnerFunktion" class="form-label fw-semibold"></label>
@@ -139,10 +149,27 @@
                 </div>
             </div>
 
+            @* ── Tätigkeitsbeschreibung ── *@
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-cp-primary text-white">
+                    <h5 class="mb-0">2. Tätigkeitsbeschreibung <span class="fw-normal opacity-75 small">(optional, empfohlen)</span></h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-2">
+                        Beschreiben Sie die konkreten Aufgaben und Verantwortlichkeiten des Mitarbeiters.
+                        Je genauer die Angaben, desto präziser und realistischer wird die KI die Tätigkeitsbeschreibung formulieren.
+                    </p>
+                    <textarea asp-for="Taetigkeitsbeschreibung"
+                              class="form-control"
+                              rows="4"
+                              placeholder="z. B. Verantwortlich für die SAP-Migration auf S/4HANA, Führung eines 5-köpfigen Projektteams, Budgetverantwortung von 2 Mio. €, Koordination mit externen Dienstleistern, Erstellung von Anforderungsanalysen und technischen Konzepten"></textarea>
+                </div>
+            </div>
+
             @* ── Bewertungsformular ── *@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-cp-primary text-white">
-                    <h5 class="mb-0">2. Bewertung (@Model.CriteriaAnswers.Count Kriterien)</h5>
+                    <h5 class="mb-0">3. Bewertung (@Model.CriteriaAnswers.Count Kriterien)</h5>
                 </div>
                 <div class="card-body">
                     <p class="text-muted small mb-3">
@@ -287,10 +314,10 @@
             const display = document.querySelector('[data-date-for="' + fieldId + '"]');
             if (!hidden || !display) return;
 
-            const fp = flatpickr(hidden, {
-                dateFormat: 'Y-m-d',
+            const fp = flatpickr(display, {
+                dateFormat: 'd.m.Y',
                 clickOpens: false,
-                allowInput: false,
+                allowInput: true,
                 onChange: function (selectedDates) {
                     if (!selectedDates.length) return;
                     const d = selectedDates[0];
@@ -298,10 +325,13 @@
                     const mm = String(d.getMonth() + 1).padStart(2, '0');
                     const yyyy = d.getFullYear();
                     display.value = dd + '.' + mm + '.' + yyyy;
-                    // Trigger jQuery Validate recheck on the hidden input
+                    hidden.value = yyyy + '-' + mm + '-' + dd;
                     $(hidden).valid();
                 }
             });
+
+            // Sync flatpickr state when editing an existing record
+            if (hidden.value) fp.setDate(hidden.value, false);
 
             btn.addEventListener('click', () => fp.open());
         });

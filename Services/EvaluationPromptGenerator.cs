@@ -71,6 +71,18 @@ public class EvaluationPromptGenerator
         sb.AppendLine($"Unterzeichner: {evaluation.Unterzeichner}");
         sb.AppendLine();
 
+        // Job responsibilities
+        if (!string.IsNullOrWhiteSpace(evaluation.Taetigkeitsbeschreibung))
+        {
+            sb.AppendLine("TÄTIGKEITSBESCHREIBUNG (vom Arbeitgeber angegeben — MUSS als Grundlage für Abschnitt 4 verwendet werden)");
+            sb.AppendLine(evaluation.Taetigkeitsbeschreibung);
+        }
+        else
+        {
+            sb.AppendLine("TÄTIGKEITSBESCHREIBUNG: Keine konkreten Angaben — generiere eine plausible Beschreibung basierend auf Position und Abteilung.");
+        }
+        sb.AppendLine();
+
         // Ratings
         sb.AppendLine("BEWERTUNGEN (Skala 1 bis 5, wobei 5 = sehr gut)");
         foreach (var answer in evaluation.CriteriaAnswers)
@@ -95,13 +107,13 @@ public class EvaluationPromptGenerator
         sb.AppendLine("5. Leistungsbeurteilung: Fachkenntnisse, Arbeitsweise, Arbeitsergebnisse mit Zeugnis-Kodiersprache");
         sb.AppendLine("6. Sozialverhalten: Verhalten gegenüber Vorgesetzten, Kollegen und Kunden");
         sb.AppendLine("7. Schlussformel: Austrittsgrund, Bedauern über das Ausscheiden, Dank für die Zusammenarbeit, Zukunftswünsche");
-        sb.AppendLine("8. Unterschriftszeile: Ort und Datum, Firmenname, Name und Funktion des Unterzeichners");
+        sb.AppendLine("8. Unterschriftszeile: NUR Firmenname, Name und Funktion des Unterzeichners — KEIN Ort und Datum hier, das steht bereits im Firmenkopf");
         sb.AppendLine();
 
         // Conventions
         sb.AppendLine("ZEUGNIS-KONVENTIONEN");
         sb.AppendLine();
-        sb.AppendLine("Wohlwollensgrundsatz: Das Zeugnis muss wohlwollend und positiv formuliert sein.");
+        sb.AppendLine("Wohlwollensgrundsatz: Das Zeugnis muss grundsätzlich wohlwollend formuliert sein — AUSNAHME: Wenn zu einem Kriterium eine Zusatzinfo mit einem konkreten negativen Vorfall angegeben ist, MUSS dieser im Zeugnis durch kodierte Zeugnissprache subtil, aber klar sichtbar werden (z. B. bei einem Vorfall mit einem Kollegen: \"sein Verhalten gegenüber Kollegen gab gelegentlich zu Beanstandungen Anlass\"). Zusatzinfos haben Vorrang vor dem Wohlwollensgrundsatz.");
         sb.AppendLine("Kodierte Sprache: Verwende diese standardisierten Formulierungen entsprechend der Bewertung:");
         sb.AppendLine("  Note sehr gut (5): stets zu unserer vollsten Zufriedenheit");
         sb.AppendLine("  Note gut (4): stets zu unserer vollen Zufriedenheit");

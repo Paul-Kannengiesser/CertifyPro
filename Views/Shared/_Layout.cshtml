@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="~/CertifyPro.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header class="no-print">
-        <nav class="navbar navbar-expand-sm navbar-dark border-bottom box-shadow mb-3" style="background-color: var(--cp-primary, #1B2A4A);">
+    <header class="no-print sticky-top">
+        <nav class="navbar navbar-expand-sm navbar-dark border-bottom box-shadow" style="background-color: var(--cp-primary, #1B2A4A);">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index" asp-area="">
                     CertifyPro
@@ -49,7 +49,7 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pt-3 pb-3">
             @RenderBody()
         </main>
     </div>

@@ -8,7 +8,10 @@
         font-family: 'Times New Roman', Times, serif;
         font-size: 1rem;
         line-height: 1.8;
-        white-space: pre-wrap;
+    }
+    .zeugnis-text:empty::before {
+        content: 'Das Zeugnis wird hier erscheinen…';
+        color: #adb5bd;
     }
 
     #printArea {
@@ -16,7 +19,6 @@
         font-family: 'Times New Roman', Times, serif;
         font-size: 12pt;
         line-height: 1.8;
-        white-space: pre-wrap;
     }
 
     @@media print {
@@ -126,11 +128,12 @@
                 <div id="statusMessage" class="d-none mb-2"></div>
 
                 @* The editable Zeugnis text *@
-                <textarea id="generatedText"
-                          class="form-control zeugnis-text border-0 p-2"
-                          rows="30"
-                          placeholder="Das Zeugnis wird hier erscheinen…"
-                          spellcheck="true">@Model.GeneratedText</textarea>
+                <div id="generatedText"
+                     contenteditable="false"
+                     class="zeugnis-text p-2"
+                     style="min-height:600px;overflow-y:auto;outline:none;cursor:text;"
+                     spellcheck="true"></div>
+                <script id="initialZeugnis" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GeneratedText ?? ""))</script>
             </div>
         </div>
     </div>
@@ -139,35 +142,60 @@
 @section Scripts {
 <script>
     const evaluationId = '@Model.Id';
-    const textarea = document.getElementById('generatedText');
+    const editor = document.getElementById('generatedText');
     const loadingDiv = document.getElementById('loadingIndicator');
     const saveBtn = document.getElementById('saveBtn');
     const statusMsg = document.getElementById('statusMessage');
     const printArea = document.getElementById('printArea');
 
-    // Keep printArea in sync with textarea
-    textarea.addEventListener('input', () => {
-        printArea.textContent = textarea.value;
+    // Regex: "München, 21. April 2026" or "Berlin, den 21. April 2026"
+    const cityDateRe = /^[A-Za-zÄÖÜäöüß][\w\säöüÄÖÜß\-]*,\s+(?:den\s+)?\d{1,2}\.\s+[A-Za-zÄÖÜäöüß]+\s+\d{4}\s*$/;
+
+    function escHtml(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderForPrint(text) {
+        return text.split('\n').map(line => {
+            const align = cityDateRe.test(line) ? 'right' : 'left';
+            return `<div style="text-align:${align}">${escHtml(line) || '\u00A0'}</div>`;
+        }).join('');
+    }
+
+    function getPlainText() {
+        return editor.innerText.replace(/\u00A0/g, ' ');
+    }
+
+    function setContent(text) {
+        editor.innerHTML = renderForPrint(text);
+        printArea.innerHTML = editor.innerHTML;
+    }
+
+    // Keep printArea in sync as user edits (don't re-render editor — would break cursor)
+    editor.addEventListener('input', () => {
+        printArea.innerHTML = renderForPrint(getPlainText());
     });
 
     function printZeugnis() {
-        printArea.textContent = textarea.value;
+        printArea.innerHTML = renderForPrint(getPlainText());
         window.print();
     }
 
     // Auto-generate on page load if no text exists
     window.addEventListener('load', () => {
-        printArea.textContent = textarea.value;
-        if (!textarea.value.trim()) {
-            generate();
-        }
+        const initial = JSON.parse(document.getElementById('initialZeugnis').textContent);
+        if (initial) setContent(initial);
+        if (!initial.trim()) generate();
     });
+
+    let streamBuffer = '';
 
     async function generate() {
         loadingDiv.classList.remove('d-none');
-        textarea.value = '';
-        printArea.textContent = '';
-        textarea.setAttribute('readonly', 'readonly');
+        streamBuffer = '';
+        editor.innerHTML = '';
+        printArea.innerHTML = '';
+        editor.contentEditable = 'false';
         if (saveBtn) saveBtn.disabled = true;
         hideStatus();
 
@@ -186,9 +214,10 @@
                 const { done, value } = await reader.read();
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
-                textarea.value += chunk;
-                printArea.textContent = textarea.value;
-                textarea.scrollTop = textarea.scrollHeight;
+                streamBuffer += chunk;
+                editor.innerHTML = renderForPrint(streamBuffer);
+                printArea.innerHTML = editor.innerHTML;
+                editor.scrollTop = editor.scrollHeight;
             }
 
             showStatus('success', 'Zeugnis erfolgreich generiert. Sie können den Text jetzt bearbeiten.');
@@ -196,13 +225,13 @@
             loadingDiv.classList.add('d-none');
             showStatus('danger', `Fehler beim Generieren: ${err.message}`);
         } finally {
-            textarea.removeAttribute('readonly');
+            editor.contentEditable = 'true';
             if (saveBtn) saveBtn.disabled = false;
         }
     }
 
     function regenerate() {
-        if (textarea.value.trim() &&
+        if (getPlainText().trim() &&
             !confirm('Das aktuelle Zeugnis wird überschrieben. Fortfahren?')) {
             return;
         }
@@ -210,7 +239,7 @@
     }
 
     async function saveText() {
-        const text = textarea.value;
+        const text = getPlainText();
         if (!text.trim()) {
             showStatus('warning', 'Kein Text zum Speichern vorhanden.');
             return;
