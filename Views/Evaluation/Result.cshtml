@@ -156,9 +156,18 @@
     }
 
     function renderForPrint(text) {
-        return text.split('\n').map(line => {
+        const isHeading = l => l.trim().length > 2 && /^[A-ZÄÖÜ0-9\s\-\/]+$/.test(l.trim());
+        const lines = text.replace(/\n{3,}/g, '\n\n').split('\n');
+        return lines.map((line, i) => {
+            if (line.trim() === '') {
+                const prev = lines.slice(0, i).reverse().find(l => l.trim() !== '');
+                const afterHeading = prev && isHeading(prev);
+                return afterHeading
+                    ? `<div style="line-height:0.4"><br></div>`
+                    : `<div><br></div>`;
+            }
             const align = cityDateRe.test(line) ? 'right' : 'left';
-            return `<div style="text-align:${align}">${escHtml(line) || '\u00A0'}</div>`;
+            return `<div style="text-align:${align}">${escHtml(line)}</div>`;
         }).join('');
     }
 
