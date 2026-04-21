@@ -1,0 +1,57 @@
+[
+  {
+    "id": "fachwissen",
+    "name": "Fachwissen und Fachkenntnisse",
+    "description": "Fachliches Wissen, berufliche Kenntnisse und Qualifikationen"
+  },
+  {
+    "id": "arbeitsqualitaet",
+    "name": "Arbeitsqualität und Sorgfalt",
+    "description": "Qualität, Genauigkeit und Sorgfalt der geleisteten Arbeit"
+  },
+  {
+    "id": "arbeitstempo",
+    "name": "Arbeitstempo und Effizienz",
+    "description": "Geschwindigkeit, Produktivität und effizienter Einsatz von Ressourcen"
+  },
+  {
+    "id": "zuverlaessigkeit",
+    "name": "Zuverlässigkeit und Pünktlichkeit",
+    "description": "Verlässlichkeit, Termintreue und Einhaltung von Zusagen"
+  },
+  {
+    "id": "selbststaendigkeit",
+    "name": "Selbstständigkeit und Initiative",
+    "description": "Eigeninitiative, selbstständiges Arbeiten und proaktives Handeln"
+  },
+  {
+    "id": "belastbarkeit",
+    "name": "Belastbarkeit",
+    "description": "Leistungsfähigkeit unter Druck, Stressresistenz und Ausdauer"
+  },
+  {
+    "id": "verhalten_vorgesetzte",
+    "name": "Verhalten gegenüber Vorgesetzten",
+    "description": "Umgang mit Vorgesetzten, Loyalität und Respekt"
+  },
+  {
+    "id": "verhalten_kollegen",
+    "name": "Verhalten gegenüber Kollegen",
+    "description": "Teamfähigkeit, Kollegialität und kooperatives Miteinander"
+  },
+  {
+    "id": "verhalten_kunden",
+    "name": "Verhalten gegenüber Kunden",
+    "description": "Kundenorientierung, Freundlichkeit und professioneller Umgang"
+  },
+  {
+    "id": "leistungsbereitschaft",
+    "name": "Leistungsbereitschaft und Motivation",
+    "description": "Engagement, Einsatzwille und Bereitschaft zur Weiterentwicklung"
+  },
+  {
+    "id": "arbeitserfolg",
+    "name": "Arbeitserfolg und Ergebnisse",
+    "description": "Erzielte Ergebnisse, Zielerreichung und Gesamtleistung"
+  }
+]

@@ -1,0 +1,89 @@
+@model List<CertifyPro.Models.Evaluation>
+@{
+    ViewData["Title"] = "Zeugnisübersicht";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">
+        <i class="bi bi-file-earmark-text"></i> Zeugnisübersicht
+    </h1>
+    <a asp-action="New" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+            <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+        </svg>
+        Neues Zeugnis
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        <strong>Noch keine Zeugnisse vorhanden.</strong>
+        Klicken Sie auf „Neues Zeugnis", um ein Arbeitszeugnis zu erstellen.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mitarbeiter</th>
+                            <th>Position</th>
+                            <th>Unternehmen</th>
+                            <th>Ø Bewertung</th>
+                            <th>Erstellt am</th>
+                            <th class="text-end">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var eval in Model)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@eval.FullName</td>
+                                <td>@eval.Position</td>
+                                <td>@eval.Firmenname</td>
+                                <td>
+                                    @{
+                                        var badgeClass = eval.AverageRating switch
+                                        {
+                                            >= 4.5 => "bg-success",
+                                            >= 3.5 => "bg-primary",
+                                            >= 2.5 => "bg-warning text-dark",
+                                            _ => "bg-danger"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">
+                                        @eval.AverageRating.ToString("F1") — @eval.AverageRatingLabel
+                                    </span>
+                                </td>
+                                <td class="text-muted small">@eval.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                <td class="text-end">
+                                    <a asp-action="Result" asp-route-id="@eval.Id"
+                                       class="btn btn-sm btn-outline-primary me-1" title="Zeugnis anzeigen">
+                                        Anzeigen
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@eval.Id"
+                                       class="btn btn-sm btn-outline-secondary me-1" title="Bearbeiten">
+                                        Bearbeiten
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@eval.Id"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('Zeugnis für @Html.Raw(eval.FullName.Replace("'", "\\'")) wirklich löschen?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Löschen">
+                                            Löschen
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <p class="text-muted small mt-2">@Model.Count Zeugnis(se) gespeichert</p>
+}

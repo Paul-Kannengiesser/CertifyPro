@@ -1,0 +1,25 @@
+@using Microsoft.Identity.Web
+@using System.Security.Claims
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    var displayName = User.GetDisplayName() ?? User.FindFirst(ClaimTypes.Email)?.Value ?? "Benutzer";
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-white opacity-75 small d-none d-md-inline">@displayName</span>
+        <a class="btn btn-outline-light btn-sm"
+           asp-area="MicrosoftIdentity"
+           asp-controller="Account"
+           asp-action="SignOut">
+            Abmelden
+        </a>
+    </div>
+}
+else
+{
+    <a class="btn btn-outline-light btn-sm"
+       asp-area="MicrosoftIdentity"
+       asp-controller="Account"
+       asp-action="SignIn">
+        Mit Microsoft anmelden
+    </a>
+}

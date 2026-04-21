@@ -1,0 +1,391 @@
+@model CertifyPro.ViewModels.EvaluationViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Zeugnis bearbeiten" : "Neues Zeugnis";
+}
+
+<style>
+    .star-group .btn-check:checked + .btn-outline-warning,
+    .star-group .btn-outline-warning:hover {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+    .criteria-card { border-left: 4px solid #dee2e6; transition: border-color 0.2s; }
+    .criteria-card:focus-within { border-left-color: var(--cp-primary, #1B2A4A); }
+    .criteria-card.star-invalid { border-left-color: #dc3545; }
+    .star-invalid .btn-outline-warning {
+        box-shadow: 0 0 0 0.18rem rgba(220,53,69,.35);
+    }
+    .form-control.is-invalid,
+    .form-select.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.18rem rgba(220,53,69,.25);
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex align-items-center mb-4">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm me-3">&larr; Zurück</a>
+            <h1 class="h2 mb-0">@ViewData["Title"]</h1>
+        </div>
+
+        <form asp-action="@(isEdit ? "Edit" : "Create")"
+              asp-route-id="@Model.Id"
+              method="post">
+            @Html.AntiForgeryToken()
+            @if (isEdit)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
+
+            @* ── Mitarbeiterdaten ── *@
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-cp-primary text-white">
+                    <h5 class="mb-0">1. Mitarbeiterdaten</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label asp-for="Anrede" class="form-label fw-semibold"></label>
+                            <select asp-for="Anrede" class="form-select">
+                                <option value="">-- Bitte wählen --</option>
+                                <option value="Herr">Herr</option>
+                                <option value="Frau">Frau</option>
+                                <option value="Divers">Divers</option>
+                            </select>
+                            <span asp-validation-for="Anrede" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Titel" class="form-label fw-semibold"></label>
+                            <input asp-for="Titel" class="form-control" placeholder="z. B. Dr., Prof." />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label fw-semibold"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Vor- und Nachname" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Position" class="form-label fw-semibold"></label>
+                            <input asp-for="Position" class="form-control" placeholder="z. B. Softwareentwickler/in" />
+                            <span asp-validation-for="Position" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Abteilung" class="form-label fw-semibold"></label>
+                            <input asp-for="Abteilung" class="form-control" placeholder="z. B. Entwicklung, Vertrieb" />
+                            <span asp-validation-for="Abteilung" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Eintrittsdatum" class="form-label fw-semibold"></label>
+                            <input asp-for="Eintrittsdatum" type="hidden" data-force-validate />
+                            <div class="input-group">
+                                <input type="text" data-date-for="Eintrittsdatum" class="form-control" placeholder="TT.MM.JJJJ" autocomplete="off" />
+                                <button type="button" class="btn btn-outline-secondary" data-cal-for="Eintrittsdatum" tabindex="-1" title="Kalender öffnen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/></svg>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Eintrittsdatum" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Austrittsdatum" class="form-label fw-semibold"></label>
+                            <input asp-for="Austrittsdatum" type="hidden" data-force-validate />
+                            <div class="input-group">
+                                <input type="text" data-date-for="Austrittsdatum" class="form-control" placeholder="TT.MM.JJJJ" autocomplete="off" />
+                                <button type="button" class="btn btn-outline-secondary" data-cal-for="Austrittsdatum" tabindex="-1" title="Kalender öffnen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/></svg>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Austrittsdatum" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Geburtsdatum" class="form-label fw-semibold"></label>
+                            <input asp-for="Geburtsdatum" type="hidden" />
+                            <div class="input-group">
+                                <input type="text" data-date-for="Geburtsdatum" class="form-control" placeholder="TT.MM.JJJJ" autocomplete="off" />
+                                <button type="button" class="btn btn-outline-secondary" data-cal-for="Geburtsdatum" tabindex="-1" title="Kalender öffnen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Austrittsgrund" class="form-label fw-semibold"></label>
+                            <select asp-for="Austrittsgrund" class="form-select">
+                                <option value="">-- Bitte wählen --</option>
+                                <option value="auf eigenen Wunsch">auf eigenen Wunsch</option>
+                                <option value="im gegenseitigen Einvernehmen">im gegenseitigen Einvernehmen</option>
+                                <option value="aufgrund einer betriebsbedingten Kündigung">aufgrund einer betriebsbedingten Kündigung</option>
+                                <option value="aufgrund des Ablaufs des Arbeitsvertrags">aufgrund des Ablaufs des Arbeitsvertrags</option>
+                                <option value="im Rahmen einer Unternehmensumstrukturierung">im Rahmen einer Unternehmensumstrukturierung</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Firmenname" class="form-label fw-semibold"></label>
+                            <input asp-for="Firmenname" class="form-control" placeholder="Name des Unternehmens" />
+                            <span asp-validation-for="Firmenname" class="text-danger small"></span>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="col-md-6">
+                            <label asp-for="UnterzeichnerName" class="form-label fw-semibold"></label>
+                            <input asp-for="UnterzeichnerName" class="form-control" placeholder="z. B. Max Mustermann" />
+                            <span asp-validation-for="UnterzeichnerName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="UnterzeichnerFunktion" class="form-label fw-semibold"></label>
+                            <input asp-for="UnterzeichnerFunktion" class="form-control" placeholder="z. B. Geschäftsführer" />
+                            <span asp-validation-for="UnterzeichnerFunktion" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* ── Bewertungsformular ── *@
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-cp-primary text-white">
+                    <h5 class="mb-0">2. Bewertung (@Model.CriteriaAnswers.Count Kriterien)</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">
+                        Bewerten Sie jeden Bereich auf einer Skala von 1 (mangelhaft) bis 5 (sehr gut).
+                    </p>
+                    @for (int i = 0; i < Model.CriteriaAnswers.Count; i++)
+                    {
+                        <div class="criteria-card card mb-3 p-3">
+                            <input type="hidden" asp-for="CriteriaAnswers[i].CriteriaId" />
+                            <input type="hidden" asp-for="CriteriaAnswers[i].CriteriaName" />
+
+                            <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">@Model.CriteriaAnswers[i].CriteriaName</h6>
+                                </div>
+                                <div class="star-group">
+                                    @for (int star = 1; star <= 5; star++)
+                                    {
+                                        var starId = $"star_{i}_{star}";
+                                        var isChecked = Model.CriteriaAnswers[i].Rating == star;
+                                        <input type="radio"
+                                               class="btn-check"
+                                               name="CriteriaAnswers[@i].Rating"
+                                               id="@starId"
+                                               value="@star"
+                                               autocomplete="off"
+                                               @(isChecked ? "checked" : "") />
+                                        <label class="btn btn-outline-warning btn-sm" for="@starId"
+                                               title="@star - @(star switch { 5 => "Sehr gut", 4 => "Gut", 3 => "Befriedigend", 2 => "Ausreichend", _ => "Mangelhaft" })">
+                                            @(new string('★', star))
+                                        </label>
+                                    }
+                                    <span asp-validation-for="CriteriaAnswers[i].Rating" class="text-danger small d-block"></span>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <input asp-for="CriteriaAnswers[i].Comment"
+                                       class="form-control form-control-sm"
+                                       placeholder="Kommentar (optional)" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <p class="text-muted small mb-4">
+                <span class="text-danger fw-semibold">*</span> Pflichtfeld
+            </p>
+
+            <div class="d-flex gap-2 justify-content-end mb-5">
+                <a asp-action="Index" class="btn btn-outline-secondary">Abbrechen</a>
+                <button type="submit" class="btn btn-cp-primary btn-lg px-4">
+                    @if (isEdit)
+                    {
+                        <span>Speichern &amp; neu generieren</span>
+                    }
+                    else
+                    {
+                        <span>Zeugnis erstellen</span>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
+    <script>
+    $(function () {
+        // ── 1. Bootstrap-style highlight / unhighlight ───────────────────
+        var v = $('form').first().validate({
+            ignore: ':hidden:not([data-force-validate])'
+        });
+        v.settings.highlight = function (element) {
+            if (element.type === 'radio') {
+                $(element).closest('.criteria-card').addClass('star-invalid');
+            } else if ($(element).is('[data-force-validate]')) {
+                // date hidden input — highlight the visible text sibling
+                $(element).closest('.col-md-4').find('input[data-date-for]').addClass('is-invalid');
+            } else {
+                $(element).addClass('is-invalid');
+            }
+        };
+        v.settings.unhighlight = function (element) {
+            if (element.type === 'radio') {
+                $(element).closest('.criteria-card').removeClass('star-invalid');
+            } else if ($(element).is('[data-force-validate]')) {
+                $(element).closest('.col-md-4').find('input[data-date-for]').removeClass('is-invalid');
+            } else {
+                $(element).removeClass('is-invalid');
+            }
+        };
+
+        // ── 2. Scroll to first invalid field ────────────────────────────
+        v.settings.invalidHandler = function (event, validator) {
+            if (validator.numberOfInvalids() > 0) {
+                var el = validator.errorList[0].element;
+                var $target;
+                if (el.type === 'radio') {
+                    $target = $(el).closest('.criteria-card');
+                } else if ($(el).is('[data-force-validate]')) {
+                    $target = $(el).closest('.col-md-4').find('input[data-date-for]');
+                } else {
+                    $target = $(el);
+                }
+                $('html, body').animate({ scrollTop: $target.offset().top - 120 }, 300);
+            }
+        };
+
+        // ── 3. Error placement for date hidden inputs ────────────────────
+        v.settings.errorPlacement = function (error, element) {
+            if ($(element).is('[data-force-validate]')) {
+                error.addClass('text-danger small');
+                $(element).closest('.col-md-4').find('.input-group').after(error);
+            } else {
+                error.insertAfter(element);
+            }
+        };
+
+        // ── 4. Auto-asterisk on required field labels ────────────────────
+        $('[data-val-required]').each(function () {
+            var labelFor = this.id;
+            // For date hidden inputs, label is associated to the hidden field id
+            var $label = $('label[for="' + labelFor + '"]');
+            if ($label.length && !$label.find('.req-star').length) {
+                $label.append('<span class="req-star text-danger ms-1" aria-hidden="true">*</span>');
+            }
+        });
+    });
+    </script>
+    <script>
+        // ── flatpickr calendar pickers ────────────────────────────────────
+        flatpickr.localize(flatpickr.l10ns.de);
+
+        document.querySelectorAll('[data-cal-for]').forEach(btn => {
+            const fieldId = btn.dataset.calFor;
+            const hidden = document.getElementById(fieldId);
+            const display = document.querySelector('[data-date-for="' + fieldId + '"]');
+            if (!hidden || !display) return;
+
+            const fp = flatpickr(hidden, {
+                dateFormat: 'Y-m-d',
+                clickOpens: false,
+                allowInput: false,
+                onChange: function (selectedDates) {
+                    if (!selectedDates.length) return;
+                    const d = selectedDates[0];
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const yyyy = d.getFullYear();
+                    display.value = dd + '.' + mm + '.' + yyyy;
+                    // Trigger jQuery Validate recheck on the hidden input
+                    $(hidden).valid();
+                }
+            });
+
+            btn.addEventListener('click', () => fp.open());
+        });
+
+        // ── Custom date mask ──────────────────────────────────────────────
+        document.querySelectorAll('[data-date-for]').forEach(display => {
+            const hidden = document.getElementById(display.dataset.dateFor);
+
+            // Pre-fill when editing an existing record (ISO → dd.mm.yyyy)
+            if (hidden && hidden.value) {
+                const [y, m, d] = hidden.value.split('-');
+                if (y && m && d) display.value = `${d}.${m}.${y}`;
+            }
+
+            // Rebuild display value from up to 8 raw digits
+            function build(digits) {
+                if (!digits.length) return '';
+
+                let day   = parseInt(digits.slice(0, 2)) || 0;
+                const monthDigits = digits.length >= 3 ? digits.slice(2, 4) : null;
+                const yearDigits  = digits.length >= 5 ? digits.slice(4, 8) : null;
+
+                let month = monthDigits !== null ? (parseInt(monthDigits) || 1) : null;
+                const year = yearDigits  ? parseInt(yearDigits.padEnd(4, '0'))  : 2000;
+
+                // Clamp month once both month digits are entered
+                if (month !== null && digits.length >= 4)
+                    month = Math.min(12, Math.max(1, month));
+
+                // Clamp day — use real maxDay once month is fully known
+                if (digits.length >= 2) {
+                    const maxDay = (month !== null && digits.length >= 4)
+                        ? new Date(year, month, 0).getDate()
+                        : 31;
+                    day = Math.min(maxDay, Math.max(1, day));
+                }
+
+                const dd = String(day).padStart(2, '0');
+
+                if (digits.length === 1) return digits;
+                if (digits.length === 2) return dd + '.';
+                if (digits.length === 3) return dd + '.' + digits[2];
+
+                const mm = String(month).padStart(2, '0');
+
+                if (digits.length === 4) return dd + '.' + mm + '.';
+                return dd + '.' + mm + '.' + (yearDigits || '');
+            }
+
+            function syncHidden() {
+                const digits = display.value.replace(/\D/g, '');
+                if (!hidden) return;
+                if (digits.length === 8) {
+                    const d = digits.slice(0, 2), m = digits.slice(2, 4), y = digits.slice(4, 8);
+                    hidden.value = `${y}-${m}-${d}`;
+                } else {
+                    hidden.value = '';
+                }
+                // Re-validate the hidden field so required error appears/clears live
+                if ($(hidden).data('force-validate') !== undefined || hidden.hasAttribute('data-force-validate')) {
+                    $(hidden).valid();
+                }
+            }
+
+            display.addEventListener('keydown', e => {
+                // Backspace over a dot → remove dot + preceding digit
+                if (e.key === 'Backspace') {
+                    const pos = display.selectionStart;
+                    if (pos > 0 && display.value[pos - 1] === '.') {
+                        e.preventDefault();
+                        display.value = display.value.slice(0, pos - 2) + display.value.slice(pos);
+                        display.setSelectionRange(pos - 2, pos - 2);
+                        syncHidden();
+                    }
+                }
+            });
+
+            display.addEventListener('input', () => {
+                const digits = display.value.replace(/\D/g, '').slice(0, 8);
+                const formatted = build(digits);
+                display.value = formatted;
+                display.setSelectionRange(formatted.length, formatted.length);
+                syncHidden();
+            });
+        });
+    </script>
+}

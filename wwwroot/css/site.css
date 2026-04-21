@@ -1,31 +1,84 @@
+:root {
+    --cp-primary: #1B2A4A;
+    --cp-beige: #F5F0E8;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: var(--cp-beige);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Primary color utilities */
+.bg-cp-primary {
+    background-color: var(--cp-primary) !important;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.text-cp-primary {
+    color: var(--cp-primary) !important;
+}
+
+.btn-cp-primary {
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
+    color: #fff;
+}
+
+.btn-cp-primary:hover,
+.btn-cp-primary:focus,
+.btn-cp-primary:active {
+    background-color: #142038;
+    border-color: #142038;
+    color: #fff;
+}
+
+/* Override Bootstrap primary to use CertifyPro navy */
+.btn-primary {
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #142038;
+    border-color: #142038;
+}
+
+.bg-primary {
+    background-color: var(--cp-primary) !important;
+}
+
+.text-primary {
+    color: var(--cp-primary) !important;
+}
+
+/* Focus rings */
+.btn:focus, .btn:active:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(27, 42, 74, 0.4);
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
 }

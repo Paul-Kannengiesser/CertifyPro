@@ -1,0 +1,80 @@
+@model CertifyPro.Models.CompanySettings
+@{
+    var isOnboarding = ViewData["Onboarding"] is true;
+    ViewData["Title"] = isOnboarding ? "Firmendaten einrichten" : "Einstellungen";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+
+        @if (isOnboarding)
+        {
+            <div class="text-center mb-4">
+                <h1 class="h2 fw-bold" style="color: var(--cp-primary)">Willkommen bei CertifyPro</h1>
+                <p class="text-muted">Bitte hinterlegen Sie zunächst Ihre Firmendaten.<br>Diese erscheinen im Kopf jedes generierten Arbeitszeugnisses.</p>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex align-items-center mb-4">
+                <h1 class="h2 mb-0">Einstellungen</h1>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+        }
+
+        <form asp-action="Index" asp-route-onboarding="@isOnboarding" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-cp-primary text-white">
+                    <h5 class="mb-0">Firmendaten</h5>
+                </div>
+                <div class="card-body">
+                    @if (!isOnboarding)
+                    {
+                        <p class="text-muted small mb-3">
+                            Diese Daten erscheinen im Firmenkopf des generierten Arbeitszeugnisses.
+                        </p>
+                    }
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Firmenname" class="form-label fw-semibold"></label>
+                            <input asp-for="Firmenname" class="form-control" placeholder="z. B. Muster GmbH" />
+                            <span asp-validation-for="Firmenname" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Strasse" class="form-label fw-semibold"></label>
+                            <input asp-for="Strasse" class="form-control" placeholder="z. B. Musterstraße 12" />
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="PLZ" class="form-label fw-semibold"></label>
+                            <input asp-for="PLZ" class="form-control" placeholder="12345" />
+                        </div>
+                        <div class="col-md-9">
+                            <label asp-for="Ort" class="form-label fw-semibold"></label>
+                            <input asp-for="Ort" class="form-control" placeholder="z. B. Berlin" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Telefon" class="form-label fw-semibold"></label>
+                            <input asp-for="Telefon" class="form-control" placeholder="z. B. +49 30 123456" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end mb-5">
+                <button type="submit" class="btn btn-cp-primary px-4 @(isOnboarding ? "btn-lg w-100" : "")">
+                    @(isOnboarding ? "Weiter zur App" : "Speichern")
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

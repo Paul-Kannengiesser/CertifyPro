@@ -1,8 +1,165 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Willkommen";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .hero {
+        background: linear-gradient(135deg, var(--cp-primary) 0%, #2d4a7a 100%);
+        color: white;
+        padding: 5rem 2rem;
+        margin: -1rem -12px 3rem -12px;
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    .hero p.lead {
+        font-size: 1.2rem;
+        opacity: 0.85;
+        max-width: 600px;
+        margin: 1rem auto 2rem;
+    }
+    .feature-card {
+        border: none;
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
+        height: 100%;
+        background: white;
+        box-shadow: 0 2px 12px rgba(27,42,74,0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(27,42,74,0.14);
+    }
+    .feature-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background: var(--cp-beige);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+    .btn-hero {
+        background: white;
+        color: var(--cp-primary);
+        font-weight: 600;
+        padding: 0.75rem 2.5rem;
+        border-radius: 8px;
+        font-size: 1.05rem;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s, transform 0.1s;
+    }
+    .btn-hero:hover {
+        background: var(--cp-beige);
+        color: var(--cp-primary);
+        transform: translateY(-1px);
+    }
+    .trust-bar {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 12px rgba(27,42,74,0.07);
+        margin-bottom: 3rem;
+    }
+</style>
+
+@* ── Hero Section ── *@
+<div class="hero">
+    <div class="container">
+        <h1>Professionelle Arbeitszeugnisse<br>in Minuten</h1>
+        <p class="lead">
+            CertifyPro erstellt rechtssichere, wohlwollende deutsche Arbeitszeugnisse
+            mit KI &mdash; individuell, vollständig und druckfertig.
+        </p>
+        <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn"
+           class="btn-hero">
+            Jetzt kostenlos starten
+        </a>
+        <p class="mt-3 small opacity-75">Anmeldung mit Ihrem Microsoft-Konto &middot; Keine Kreditkarte erforderlich</p>
+    </div>
+</div>
+
+@* ── Features ── *@
+<div class="container">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">&#129504;</div>
+                <h5 class="fw-semibold">KI-gestützte Generierung</h5>
+                <p class="text-muted small mb-0">
+                    Claude AI formuliert vollständige Arbeitszeugnisse nach deutschen Standards &mdash;
+                    inklusive Kodiersprache und Wohlwollensgrundsatz.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">&#9998;</div>
+                <h5 class="fw-semibold">Bearbeiten &amp; Anpassen</h5>
+                <p class="text-muted small mb-0">
+                    Den generierten Text direkt im Browser bearbeiten, speichern
+                    und jederzeit neu generieren lassen.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">&#128438;</div>
+                <h5 class="fw-semibold">Druckfertig als PDF</h5>
+                <p class="text-muted small mb-0">
+                    Sauberes A4-Drucklayout mit Firmenkopf &mdash; direkt aus dem Browser
+                    drucken oder als PDF speichern.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">&#127775;</div>
+                <h5 class="fw-semibold">11 Bewertungskriterien</h5>
+                <p class="text-muted small mb-0">
+                    Strukturierte Bewertung von Fachkompetenz, Arbeitsweise,
+                    Sozialverhalten und mehr &mdash; auf einer 5-Sterne-Skala.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">&#128274;</div>
+                <h5 class="fw-semibold">Ihre Daten, nur für Sie</h5>
+                <p class="text-muted small mb-0">
+                    Jeder Nutzer sieht ausschließlich seine eigenen Zeugnisse.
+                    Sichere Anmeldung über Microsoft Identity.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">&#127970;</div>
+                <h5 class="fw-semibold">Firmenkopf konfigurierbar</h5>
+                <p class="text-muted small mb-0">
+                    Unternehmensname, Adresse und Kontaktdaten einmalig hinterlegen &mdash;
+                    automatisch in jeden Zeugniskopf übernommen.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @* ── CTA Banner ── *@
+    <div class="trust-bar text-center">
+        <h4 class="fw-semibold mb-2" style="color: var(--cp-primary)">Bereit loszulegen?</h4>
+        <p class="text-muted mb-3">Erstellen Sie Ihr erstes Arbeitszeugnis in weniger als 5 Minuten.</p>
+        <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn"
+           class="btn btn-cp-primary btn-lg px-5">
+            Mit Microsoft anmelden
+        </a>
+    </div>
 </div>

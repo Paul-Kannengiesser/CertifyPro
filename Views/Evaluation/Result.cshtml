@@ -1,0 +1,262 @@
+@model CertifyPro.Models.Evaluation
+@{
+    ViewData["Title"] = $"Zeugnis – {Model.FullName}";
+}
+
+<style>
+    .zeugnis-text {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 1rem;
+        line-height: 1.8;
+        white-space: pre-wrap;
+    }
+
+    #printArea {
+        display: none;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.8;
+        white-space: pre-wrap;
+    }
+
+    @@media print {
+        .no-print { display: none !important; }
+        header, footer, nav, .footer { display: none !important; }
+        body { background: white !important; margin: 0; }
+        .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+
+        #printArea {
+            display: block !important;
+            margin: 2.5cm;
+            font-size: 12pt;
+            line-height: 1.8;
+        }
+    }
+</style>
+
+@* Hidden print-only div — synced from textarea *@
+<div id="printArea"></div>
+
+<div class="no-print d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">&larr; Übersicht</a>
+        <h1 class="h3 mb-0">Arbeitszeugnis</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Bearbeiten</a>
+        <button onclick="printZeugnis()" class="btn btn-outline-dark btn-sm">Drucken / PDF</button>
+    </div>
+</div>
+
+<div class="row g-4">
+    @* ── Mitarbeiterdaten Sidebar ── *@
+    <div class="col-lg-3 no-print">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light fw-semibold">Mitarbeiter</div>
+            <div class="card-body small">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr><td class="text-muted">Name</td><td><strong>@Model.FullName</strong></td></tr>
+                    <tr><td class="text-muted">Position</td><td>@Model.Position</td></tr>
+                    <tr><td class="text-muted">Abteilung</td><td>@Model.Abteilung</td></tr>
+                    <tr><td class="text-muted">Firma</td><td>@Model.Firmenname</td></tr>
+                    @if (Model.Eintrittsdatum.HasValue)
+                    {
+                        <tr><td class="text-muted">Eintritt</td><td>@Model.Eintrittsdatum.Value.ToString("dd.MM.yyyy")</td></tr>
+                    }
+                    @if (Model.Austrittsdatum.HasValue)
+                    {
+                        <tr><td class="text-muted">Austritt</td><td>@Model.Austrittsdatum.Value.ToString("dd.MM.yyyy")</td></tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold">Ø Bewertung</div>
+            <div class="card-body text-center">
+                @{
+                    var badgeClass = Model.AverageRating switch
+                    {
+                        >= 4.5 => "bg-success",
+                        >= 3.5 => "bg-primary",
+                        >= 2.5 => "bg-warning text-dark",
+                        _ => "bg-danger"
+                    };
+                }
+                <div class="display-6 fw-bold" style="color: var(--cp-primary, #1B2A4A)">@Model.AverageRating.ToString("F1")</div>
+                <span class="badge @badgeClass fs-6">@Model.AverageRatingLabel</span>
+                <hr class="my-2" />
+                @foreach (var a in Model.CriteriaAnswers)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small text-truncate" style="max-width:140px" title="@a.CriteriaName">@a.CriteriaName</span>
+                        <span class="badge bg-secondary ms-1">@a.Rating/5</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* ── Zeugnis Text ── *@
+    <div class="col-lg-9 no-print">
+        <div class="card shadow-sm">
+            <div class="card-header bg-cp-primary text-white d-flex justify-content-between align-items-center no-print">
+                <span class="fw-semibold">Zeugnis-Text</span>
+                <div class="d-flex gap-2">
+                    @if (!string.IsNullOrEmpty(Model.GeneratedText))
+                    {
+                        <button onclick="regenerate()" class="btn btn-sm btn-outline-light" id="regenBtn">
+                            &circlearrowleft; Neu generieren
+                        </button>
+                    }
+                    <button onclick="saveText()" class="btn btn-sm btn-light" id="saveBtn">
+                        Speichern
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                @* Loading indicator *@
+                <div id="loadingIndicator" class="text-center py-5 @(string.IsNullOrEmpty(Model.GeneratedText) ? "" : "d-none")">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Wird generiert...</span>
+                    </div>
+                    <p class="text-muted">KI generiert das Arbeitszeugnis&hellip;<br><small>Dies kann 30–60 Sekunden dauern.</small></p>
+                </div>
+
+                @* Status message *@
+                <div id="statusMessage" class="d-none mb-2"></div>
+
+                @* The editable Zeugnis text *@
+                <textarea id="generatedText"
+                          class="form-control zeugnis-text border-0 p-2"
+                          rows="30"
+                          placeholder="Das Zeugnis wird hier erscheinen…"
+                          spellcheck="true">@Model.GeneratedText</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const evaluationId = '@Model.Id';
+    const textarea = document.getElementById('generatedText');
+    const loadingDiv = document.getElementById('loadingIndicator');
+    const saveBtn = document.getElementById('saveBtn');
+    const statusMsg = document.getElementById('statusMessage');
+    const printArea = document.getElementById('printArea');
+
+    // Keep printArea in sync with textarea
+    textarea.addEventListener('input', () => {
+        printArea.textContent = textarea.value;
+    });
+
+    function printZeugnis() {
+        printArea.textContent = textarea.value;
+        window.print();
+    }
+
+    // Auto-generate on page load if no text exists
+    window.addEventListener('load', () => {
+        printArea.textContent = textarea.value;
+        if (!textarea.value.trim()) {
+            generate();
+        }
+    });
+
+    async function generate() {
+        loadingDiv.classList.remove('d-none');
+        textarea.value = '';
+        printArea.textContent = '';
+        textarea.setAttribute('readonly', 'readonly');
+        if (saveBtn) saveBtn.disabled = true;
+        hideStatus();
+
+        try {
+            const response = await fetch(`/Evaluation/Generate/${evaluationId}`);
+            if (!response.ok) {
+                throw new Error(`Server-Fehler: ${response.status}`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+
+            loadingDiv.classList.add('d-none');
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                textarea.value += chunk;
+                printArea.textContent = textarea.value;
+                textarea.scrollTop = textarea.scrollHeight;
+            }
+
+            showStatus('success', 'Zeugnis erfolgreich generiert. Sie können den Text jetzt bearbeiten.');
+        } catch (err) {
+            loadingDiv.classList.add('d-none');
+            showStatus('danger', `Fehler beim Generieren: ${err.message}`);
+        } finally {
+            textarea.removeAttribute('readonly');
+            if (saveBtn) saveBtn.disabled = false;
+        }
+    }
+
+    function regenerate() {
+        if (textarea.value.trim() &&
+            !confirm('Das aktuelle Zeugnis wird überschrieben. Fortfahren?')) {
+            return;
+        }
+        generate();
+    }
+
+    async function saveText() {
+        const text = textarea.value;
+        if (!text.trim()) {
+            showStatus('warning', 'Kein Text zum Speichern vorhanden.');
+            return;
+        }
+
+        if (saveBtn) saveBtn.disabled = true;
+
+        try {
+            const response = await fetch('/Evaluation/SaveText', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': getAntiForgeryToken()
+                },
+                body: JSON.stringify({ id: evaluationId, text: text })
+            });
+
+            if (response.ok) {
+                showStatus('success', 'Zeugnis gespeichert!');
+            } else {
+                showStatus('danger', 'Fehler beim Speichern. Bitte erneut versuchen.');
+            }
+        } catch (err) {
+            showStatus('danger', `Netzwerkfehler: ${err.message}`);
+        } finally {
+            if (saveBtn) saveBtn.disabled = false;
+        }
+    }
+
+    function showStatus(type, message) {
+        statusMsg.className = `alert alert-${type} py-2 small no-print`;
+        statusMsg.textContent = message;
+        statusMsg.classList.remove('d-none');
+        setTimeout(() => statusMsg.classList.add('d-none'), 5000);
+    }
+
+    function hideStatus() {
+        statusMsg.classList.add('d-none');
+    }
+
+    function getAntiForgeryToken() {
+        const el = document.querySelector('input[name="__RequestVerificationToken"]');
+        return el ? el.value : '';
+    }
+</script>
+
+@* Hidden anti-forgery token for JS AJAX *@
+@Html.AntiForgeryToken()
+}
