@@ -21,17 +21,31 @@
         line-height: 1.8;
     }
 
+    @@page {
+        size: A4;
+        margin: 0;
+        margin-top: 1.5cm;
+    }
+
+    @@page :first {
+        margin-top: 0;
+    }
+
     @@media print {
         .no-print { display: none !important; }
         header, footer, nav, .footer { display: none !important; }
-        body { background: white !important; margin: 0; }
+        body { background: white !important; margin: 0; padding: 0; }
         .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+        html, body { height: auto !important; overflow: visible !important; }
 
         #printArea {
             display: block !important;
-            margin: 2.5cm;
+            padding: 2.5cm;
+            margin: 0;
             font-size: 12pt;
             line-height: 1.8;
+            box-sizing: border-box;
+            width: 100%;
         }
     }
 </style>
@@ -157,7 +171,7 @@
 
     function renderForPrint(text) {
         const isHeading = l => l.trim().length > 2 && /^[A-ZÄÖÜ0-9\s\-\/]+$/.test(l.trim());
-        const lines = text.replace(/\n{3,}/g, '\n\n').split('\n');
+        const lines = text.trim().replace(/\n{3,}/g, '\n\n').split('\n');
         return lines.map((line, i) => {
             if (line.trim() === '') {
                 const prev = lines.slice(0, i).reverse().find(l => l.trim() !== '');

@@ -1,70 +1,119 @@
-# 🎓 CertifyPro - Employee Review Report Manager (ERRM)
+# CertifyPro
 
-Willkommen im Team-Repository für unser Projekt in **Web-Programmierung**!     
-Dieses Projekt basiert auf **ASP.NET Core MVC** und nutzt **.NET 8/9** sowie **OpenAI** zur Zeugnisgenerierung
+KI-gestützte Webanwendung zur Erstellung professioneller, rechtssicherer deutscher Arbeitszeugnisse. Nutzer geben Mitarbeiterdaten und Bewertungen ein — Claude AI generiert daraus ein vollständiges, druckfertiges Arbeitszeugnis mit korrekter Zeugnis-Kodiersprache.
+
+## Funktionalitäten
+
+- **Zeugniserstellung**: Formularbasierte Eingabe von Mitarbeiterdaten, Tätigkeitsbeschreibung und Bewertungen auf einer 5-Sterne-Skala (11 Kriterien)
+- **KI-Generierung**: Claude AI (claude-sonnet-4-5) erstellt ein vollständiges Arbeitszeugnis mit korrekter deutscher Zeugnis-Kodiersprache und Wohlwollensgrundsatz
+- **Streamed Output**: Das Zeugnis wird live gestreamt und direkt im Browser angezeigt
+- **Bearbeiten & Speichern**: Der generierte Text ist direkt im Browser editierbar und wird gespeichert
+- **Druckfertiges PDF**: Sauberes A4-Layout mit Firmenkopf, direkt aus dem Browser druckbar oder als PDF exportierbar
+- **Multi-Account**: Jeder Nutzer sieht ausschließlich seine eigenen Zeugnisse — vollständig isoliert per Azure Object ID
+- **Firmenprofil**: Firmenname, Adresse und Kontaktdaten einmalig in den Einstellungen hinterlegen, werden automatisch in jeden Zeugniskopf übernommen
+- **Onboarding**: Neue Accounts werden beim ersten Login automatisch zur Einstellungsseite weitergeleitet
+
+## Technischer Stack
+
+| Bereich | Technologie |
+|---|---|
+| Framework | ASP.NET Core 9, MVC |
+| Sprache | C# |
+| KI | Anthropic Claude API (NuGet: `Anthropic`) |
+| Auth | Microsoft Entra ID (Azure AD) via `Microsoft.Identity.Web` |
+| Datenhaltung | JSON-Dateien im `Data/`-Verzeichnis |
+| Frontend | Bootstrap 5, Flatpickr, jQuery Validate |
 
 ---
 
-## 🚀 1. Projekt lokal einrichten (Clone)
+## Setup
 
-Um das Projekt auf euren Rechner zu bekommen, öffnet euer Terminal (Mac: Terminal, Windows: PowerShell) und gebt folgendes ein:
+### Voraussetzungen
+
+- [.NET 9 SDK](https://dotnet.microsoft.com/download)
+- Ein **Anthropic API Key**
+- Eine **Microsoft Entra ID App-Registrierung** (Azure AD)
+
+### 1. Repository klonen
 
 ```bash
-# Projekt auf den eigenen Rechner kopieren
 git clone git@github.com:Paul-Kannengiesser/CertifyPro.git
-
-# In den Projektordner wechseln
 cd CertifyPro
 ```
 
-## 🔑 2. GitHub-Account NUR für diesen Ordner festlegen
-Da wir parallel andere Uni-Projekte über GitLab umsetzen, müssen wir Git sagen,    
-dass ihr in diesem speziellen Ordner eure GitHub-Daten verwenden wollt.    
-So kommen sich die Accounts nicht in die Quere.
+### 2. Git-Account für diesen Ordner setzen
 
-Gebt dazu innerhalb des Projektordners folgendes ein:
+Da ihr möglicherweise parallel andere Projekte über GitLab laufen habt, Git-Identität lokal setzen:
+
 ```bash
-# Namen für DIESES Projekt setzen
 git config user.name "Euer GitHub Name"
-
-# E-Mail für DIESES Projekt setzen (die von eurem GitHub Account)
 git config user.email "eure-github-mail@beispiel.de"
-
-# Kurzer Check (muss jetzt eure GitHub Daten zeigen)
-git config user.name
-git config user.email
 ```
 
-## 🛠️ 3. Installation der Tools & Abhängigkeiten
-Damit das Programm bei euch läuft, benötigt ihr das .NET SDK.   
-Download: Installiert das .NET 8.0 SDK (LTS) oder höher (nicht neuer als 9.0) von dotnet.microsoft.com.   
-Abhängigkeiten laden: Navigiert im Terminal in den Ordner CertifyPro und tippt:
+### 3. Abhängigkeiten laden
 
 ```bash
 dotnet restore
-#Dies lädt alle nötigen Pakete (wie für die KI oder das Web-Framework) automatisch herunter.
-````
-
-## ⚡ 4. Das Projekt starten
-Um die Webseite lokal zu testen:
-
-```bash
-# App starten
-dotnet run   
-
-#Sobald im Terminal steht Now listening on: http://localhost:5000 (oder ähnliches), 
-#könnt ihr diese Adresse im Browser öffnen.
 ```
 
-## 📝 5. Unsere Architektur & Abgabe-Regeln
-### Wir halten uns strikt an das MVC-Konzept (Model-View-Controller):
+### 4. Secrets konfigurieren
 
-+ Models: Klassen, die unsere Daten (z. B. Mitarbeiter-Infos) strukturieren.
+Die Zugangsdaten werden nicht in `appsettings.json` eingecheckt. Stattdessen .NET User Secrets verwenden:
 
-+ Views: Razor-Templates (.cshtml), die das HTML für den Browser erzeugen.
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "Anthropic:ApiKey" "<dein-anthropic-key>"
+dotnet user-secrets set "AzureAd:ClientId" "<deine-client-id>"
+dotnet user-secrets set "AzureAd:ClientSecret" "<dein-client-secret>"
+```
 
-+ Controllers: Die Logik, die Anfragen verarbeitet und die Views steuert.
+### 5. Anwendung starten
 
-+ Wichtig für die Prüfung: Wir dürfen KI (Copilot, ChatGPT etc.) zum Coden nutzen, müssen den Code aber bei der Präsentation erklären können!
+```bash
+dotnet run
+```
 
-+ Die fertige App muss Evaluierungen abfragen und ein fertiges Zeugnis generieren können.
+Die App ist anschließend unter dem in der Konsole angezeigten Port erreichbar (z. B. `http://localhost:5210`).
+
+---
+
+## Secrets beschaffen
+
+### Anthropic API Key
+
+1. Account erstellen auf [console.anthropic.com](https://console.anthropic.com)
+2. Unter **API Keys** → **Create Key**
+3. Den Key per `dotnet user-secrets set` eintragen (siehe oben)
+
+> Hinweis: Die API ist kostenpflichtig. Für Tests reicht ein kleines Guthaben — ein Zeugnis kostet ca. $0.01–0.03.
+
+### Microsoft Entra ID (Azure AD)
+
+1. Im [Azure Portal](https://portal.azure.com) anmelden → **Microsoft Entra ID** → **App-Registrierungen** → **Neue Registrierung**
+2. Name vergeben, Kontotyp: **Konten in einem beliebigen Organisationsverzeichnis und persönliche Microsoft-Konten**
+3. Redirect URI hinzufügen: `http://localhost:<port>/signin-oidc` (Typ: Web)
+4. Nach der Registrierung:
+   - **Application (Client) ID** → als `AzureAd:ClientId` eintragen
+   - Unter **Zertifikate & Geheimnisse** → **Neuer geheimer Clientschlüssel** erstellen → als `AzureAd:ClientSecret` eintragen
+5. Unter **Authentifizierung** zusätzlich eintragen:
+   - Logout-URL: `http://localhost:<port>/signout-callback-oidc`
+   - **ID-Token** unter impliziter Gewährung aktivieren
+
+Die `TenantId` in `appsettings.json` steht auf `common` und akzeptiert alle Microsoft-Accounts (privat und Geschäft).
+
+---
+
+## Projektstruktur
+
+```
+CertifyPro/
+├── Controllers/          # MVC Controller (Evaluation, Settings, Home)
+├── Models/               # Datenmodelle (Evaluation, CompanySettings, ...)
+├── ViewModels/           # Formular-ViewModels
+├── Views/                # Razor Views
+├── Services/             # KI-Generierung, Prompt-Builder, Settings-Service
+├── Repositories/         # JSON-basierte Datenhaltung
+├── Filters/              # Onboarding-Filter (leitet neue User zu Settings)
+├── Data/                 # Laufzeitdaten (nicht eingecheckt, außer DefaultEvaluationCriterias.json)
+└── appsettings.json      # Konfigurationsstruktur (ohne Secrets)
+```
