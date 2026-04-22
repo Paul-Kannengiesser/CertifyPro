@@ -46,11 +46,9 @@ public class EvaluationController : Controller
     // GET /Evaluation/New
     public async Task<IActionResult> New()
     {
-        var company = await _companySettings.GetAsync(UserId);
         var criteria = LoadCriteria();
         var vm = new EvaluationViewModel
         {
-            Firmenname = company?.Firmenname ?? string.Empty,
             CriteriaAnswers = criteria.Select(c => new CriteriaAnswerViewModel
             {
                 CriteriaId = c.Id,
@@ -69,6 +67,7 @@ public class EvaluationController : Controller
         if (!ModelState.IsValid)
             return View("New", vm);
 
+        var company = await _companySettings.GetAsync(UserId);
         var evaluation = new Evaluation
         {
             UserId = UserId,
@@ -83,7 +82,7 @@ public class EvaluationController : Controller
             Austrittsdatum = vm.Austrittsdatum,
             Austrittsgrund = vm.Austrittsgrund,
             Geburtsdatum = vm.Geburtsdatum,
-            Firmenname = vm.Firmenname,
+            Firmenname = company?.Firmenname ?? string.Empty,
             Taetigkeitsbeschreibung = vm.Taetigkeitsbeschreibung,
             UnterzeichnerVorname = vm.UnterzeichnerVorname,
             UnterzeichnerNachname = vm.UnterzeichnerNachname,
@@ -196,7 +195,8 @@ public class EvaluationController : Controller
         evaluation.Austrittsdatum = vm.Austrittsdatum;
         evaluation.Austrittsgrund = vm.Austrittsgrund;
         evaluation.Geburtsdatum = vm.Geburtsdatum;
-        evaluation.Firmenname = vm.Firmenname;
+        var company = await _companySettings.GetAsync(UserId);
+        evaluation.Firmenname = company?.Firmenname ?? evaluation.Firmenname;
         evaluation.Taetigkeitsbeschreibung = vm.Taetigkeitsbeschreibung;
         evaluation.UnterzeichnerVorname = vm.UnterzeichnerVorname;
         evaluation.UnterzeichnerNachname = vm.UnterzeichnerNachname;
@@ -251,7 +251,6 @@ public class EvaluationController : Controller
             Austrittsdatum = e.Austrittsdatum,
             Austrittsgrund = e.Austrittsgrund,
             Geburtsdatum = e.Geburtsdatum,
-            Firmenname = e.Firmenname,
             Taetigkeitsbeschreibung = e.Taetigkeitsbeschreibung,
             UnterzeichnerVorname = e.UnterzeichnerVorname,
             UnterzeichnerNachname = e.UnterzeichnerNachname,

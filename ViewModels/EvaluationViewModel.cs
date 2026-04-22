@@ -46,10 +46,6 @@ public class EvaluationViewModel
     [Display(Name = "Geburtsdatum")]
     public DateTime? Geburtsdatum { get; set; }
 
-    [Required(ErrorMessage = "Firmenname ist erforderlich")]
-    [Display(Name = "Firmenname")]
-    public string Firmenname { get; set; } = string.Empty;
-
     [Display(Name = "Tätigkeitsbeschreibung")]
     public string? Taetigkeitsbeschreibung { get; set; }
 
