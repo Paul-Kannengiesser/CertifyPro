@@ -64,6 +64,12 @@ Die Zugangsdaten kommen in eine Datei namens `appsettings.Development.json`, die
 
 ```json
 {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
   "Anthropic": {
     "ApiKey": "<dein-anthropic-key>"
   },
