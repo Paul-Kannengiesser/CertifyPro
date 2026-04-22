@@ -123,6 +123,14 @@ public class EvaluationPromptGenerator
         sb.AppendLine($"Anrede: Verwende konsequent die Anrede \"{evaluation.Anrede}\" im gesamten Zeugnis.");
         sb.AppendLine("Keine Platzhalter: Kein Text in eckigen Klammern wie [Name] oder [Datum] im fertigen Zeugnis.");
         sb.AppendLine();
+        sb.AppendLine("NATÜRLICHKEIT UND STIL — ENTSCHEIDEND");
+        sb.AppendLine();
+        sb.AppendLine("Das Zeugnis muss klingen, als hätte ein erfahrener Personalleiter es persönlich und sorgfältig verfasst — nicht wie ein automatisch ausgefülltes Formular.");
+        sb.AppendLine("NIEMALS ein Kriterium = ein Satz. Fasse mehrere inhaltlich verwandte Kriterien zu fließenden, zusammenhängenden Absätzen zusammen.");
+        sb.AppendLine("Variiere die Satzstruktur, Einleitungen und Formulierungen stark — auch wenn mehrere Kriterien dieselbe Notenstufe haben, darf kein Satz dem nächsten strukturell gleichen.");
+        sb.AppendLine("Die Kodierphrase muss organisch in den Satz eingebettet sein, nicht mechanisch angehängt. Falsch: 'Seine Pünktlichkeit war im Wesentlichen zu unserer Zufriedenheit.' Richtig: 'Auch in seinem Zeitmanagement und seiner Verlässlichkeit entsprach er im Wesentlichen unseren Erwartungen.'");
+        sb.AppendLine("Nutze abwechslungsreiche Einleitungen: Bezüge zur Stelle, zur Teamdynamik, zu konkreten Situationen oder zur Entwicklung im Beschäftigungsverlauf.");
+        sb.AppendLine();
 
         // Formatting rules — most important
         sb.AppendLine("FORMATIERUNGSREGELN — UNBEDINGT EINHALTEN");
@@ -138,11 +146,13 @@ public class EvaluationPromptGenerator
     }
 
     public string SystemPrompt =>
-        "Du bist ein erfahrener HR-Experte und Spezialist für deutsche Arbeitszeugnisse. " +
-        "Du erstellst professionelle, rechtlich einwandfreie und wohlwollende Arbeitszeugnisse " +
-        "gemäß den deutschen Standards und dem Wohlwollensgrundsatz. " +
+        "Du bist ein erfahrener Personalleiter mit 20 Jahren Erfahrung im Verfassen qualifizierter deutscher Arbeitszeugnisse. " +
+        "Du schreibst Zeugnisse, die sich von automatisch generierten Texten abheben: flüssig, individuell, natürlich klingend — " +
+        "als hätte eine echte Person dieses Zeugnis für einen konkreten Mitarbeiter verfasst. " +
+        "Du beherrschst die deutsche Zeugnis-Kodiersprache perfekt und setzt sie geschickt und unauffällig ein. " +
+        "Mehrere Kriterien fasst du immer zu zusammenhängenden, abwechslungsreich formulierten Absätzen zusammen — nie ein Kriterium pro Satz. " +
         "WICHTIG: Gib ausschließlich den fertigen Zeugnis-Text als reinen Fließtext aus. " +
-        "Keinerlei Markdown-Formatierung verwenden: keine Hashtags (#), keine Sternchen (*), keine Bindestriche als Listenpunkte. " +
+        "Keinerlei Markdown-Formatierung: keine Hashtags (#), keine Sternchen (*), keine Bindestriche als Listenpunkte. " +
         "Keine Platzhalter in eckigen Klammern. " +
         "Abschnitte mit Leerzeilen trennen. Überschriften in GROSSBUCHSTABEN ohne Sonderzeichen.";
 }

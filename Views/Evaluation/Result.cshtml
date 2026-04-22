@@ -193,7 +193,10 @@
     // Auto-generate on page load if no text exists
     window.addEventListener('load', () => {
         const initial = JSON.parse(document.getElementById('initialZeugnis').textContent);
-        if (initial) setContent(initial);
+        if (initial) {
+            setContent(initial);
+            editor.contentEditable = 'true';
+        }
         if (!initial.trim()) generate();
     });
 
