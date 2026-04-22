@@ -58,14 +58,23 @@ dotnet restore
 
 ### 4. Secrets konfigurieren
 
-Die Zugangsdaten werden nicht in `appsettings.json` eingecheckt. Stattdessen .NET User Secrets verwenden:
+Die Zugangsdaten kommen in eine Datei namens `appsettings.Development.json`, die **nicht** im Repository enthalten ist und manuell angelegt werden muss.
 
-```bash
-dotnet user-secrets init
-dotnet user-secrets set "Anthropic:ApiKey" "<dein-anthropic-key>"
-dotnet user-secrets set "AzureAd:ClientId" "<deine-client-id>"
-dotnet user-secrets set "AzureAd:ClientSecret" "<dein-client-secret>"
+**Datei anlegen:** Im Projektstamm (dort wo `appsettings.json` liegt) eine neue Datei `appsettings.Development.json` erstellen mit folgendem Inhalt:
+
+```json
+{
+  "Anthropic": {
+    "ApiKey": "<dein-anthropic-key>"
+  },
+  "AzureAd": {
+    "ClientId": "<deine-client-id>",
+    "ClientSecret": "<dein-client-secret>"
+  }
+}
 ```
+
+Die Platzhalter `<dein-...>` durch die echten Werte ersetzen (siehe Abschnitt *Secrets beschaffen*). ASP.NET Core lädt diese Datei automatisch beim lokalen Start und die Werte überschreiben die leeren Felder aus `appsettings.json`.
 
 ### 5. Anwendung starten
 
@@ -96,8 +105,10 @@ Die App ist anschließend unter dem in der Konsole angezeigten Port erreichbar (
    - **Application (Client) ID** → als `AzureAd:ClientId` eintragen
    - Unter **Zertifikate & Geheimnisse** → **Neuer geheimer Clientschlüssel** erstellen → als `AzureAd:ClientSecret` eintragen
 5. Unter **Authentifizierung** zusätzlich eintragen:
-   - Logout-URL: `http://localhost:<port>/signout-callback-oidc`
+   - Logout-URL: `https://localhost:<port>/signout-callback-oidc`
    - **ID-Token** unter impliziter Gewährung aktivieren
+
+   > **Hinweis:** Azure erfordert für Logout-URL und ID-Token zwingend `https://` — `http://` wird nicht akzeptiert. Beim lokalen Start mit `dotnet run` ist HTTPS automatisch verfügbar (selbstsigniertes Zertifikat), der Port ist in der Konsole sichtbar.
 
 Die `TenantId` in `appsettings.json` steht auf `common` und akzeptiert alle Microsoft-Accounts (privat und Geschäft).
 
